@@ -13,7 +13,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.dot."
+        applicationId "com.dot"
 
         minSdkVersion 21
         targetSdkVersion 30
