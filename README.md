@@ -1,2 +1,3 @@
 # dot.
-An Android smart alarm app that handles your wake up time considering traffic and you morning destination.
+
+![Travis (.org) branch](https://img.shields.io/travis/dandeduck/Voyager/master.svg)
