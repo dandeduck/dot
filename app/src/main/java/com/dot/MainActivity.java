@@ -1,4 +1,4 @@
-package com.navapp;
+package com.dot;
 
 import android.os.Bundle;
 
