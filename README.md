@@ -1,2 +1,5 @@
-# dot.
-An Android smart alarm app that handles your wake up time considering traffic and you morning destination.
+# unnamedAndroidApp
+
+![Travis (.org) branch](https://img.shields.io/travis/dandeduck/Voyager/master.svg)
+
+A delivery app without a name.
