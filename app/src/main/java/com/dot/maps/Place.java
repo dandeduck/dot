@@ -15,4 +15,12 @@ public class Place {
         this.address = address;
         this.location = location;
     }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public LatLng getLocation() {
+        return location;
+    }
 }

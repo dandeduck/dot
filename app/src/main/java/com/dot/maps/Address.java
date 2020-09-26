@@ -22,4 +22,16 @@ public class Address {
     public String get(String type) {
         return shortNameMap.get(type);
     }
+
+    public String shortStreetName() {
+        return get("route");
+    }
+
+    public int streetNumber() {
+        return Integer.parseInt(get("street_number"));
+    }
+
+    public String shortCityName() {
+        return get("locality");
+    }
 }
