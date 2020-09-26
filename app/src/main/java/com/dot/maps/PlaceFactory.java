@@ -7,26 +7,26 @@ import com.google.maps.model.PlaceDetails;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PlaceDetailsFactory {
+public class PlaceFactory {
     private final GeoApiContext context;
     private final PlaceAutocompleteRequest.SessionToken session;
 
-    public PlaceDetailsFactory(GeoApiContext context, PlaceAutocompleteRequest.SessionToken session) {
+    public PlaceFactory(GeoApiContext context, PlaceAutocompleteRequest.SessionToken session) {
         this.context = context;
         this.session = session;
     }
 
-    public void request(String userInput, PendingResult.Callback<List<PlaceDetails>> callback) {
+    public void request(String userInput, PendingResult.Callback<List<Place>> callback) {
         PlacesApi.placeAutocomplete(context, userInput, session)
                 .setCallback(new PendingResult.Callback<AutocompletePrediction[]>() {
                     @Override
                     public void onResult(AutocompletePrediction[] result) {
-                        List<PlaceDetails> details = new ArrayList<>();
+                        List<Place> places = new ArrayList<>();
 
                         for (AutocompletePrediction prediction : result)
-                            requestSingleDetails(prediction, detailsCallback(details, callback));
+                            requestSingleDetails(prediction, placeCallback(places, callback));
 
-                        callback.onResult(details);
+                        callback.onResult(places);
                     }
 
                     @Override
@@ -44,11 +44,11 @@ public class PlaceDetailsFactory {
                 .setCallback(callback);
     }
 
-    private PendingResult.Callback<PlaceDetails> detailsCallback(List<PlaceDetails> details, PendingResult.Callback<List<PlaceDetails>> callback) {
+    private PendingResult.Callback<PlaceDetails> placeCallback(List<Place> details, PendingResult.Callback<List<Place>> callback) {
         return new PendingResult.Callback<PlaceDetails>() {
             @Override
             public void onResult(PlaceDetails result) {
-                details.add(result);
+                details.add(new Place(result));
             }
 
             @Override
