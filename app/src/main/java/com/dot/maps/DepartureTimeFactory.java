@@ -25,7 +25,7 @@ public class DepartureTimeFactory {
         api = OnlineRoutingApi.create(context, apiKey);
     }
 
-    public void request(LatLng origin, LatLng destination, com.tomtom.online.sdk.routing.route.description.TravelMode travelMode, DateTime arrivalDate, PendingResult.Callback<String> callback) {
+    public void request(LatLng origin, LatLng destination, com.tomtom.online.sdk.routing.route.description.TravelMode travelMode, DateTime arrivalDate, PendingResult.Callback<DepartureTime> callback) {
         RouteDescriptor routeDescriptor = new RouteDescriptor.Builder()
                 .considerTraffic(true)
                 .travelMode(travelMode)
@@ -44,7 +44,7 @@ public class DepartureTimeFactory {
         api.planRoute(routeSpecification, new RouteCallback() {
             @Override
             public void onSuccess(@NotNull RoutePlan routePlan) {
-                callback.onResult(routePlan.getRoutes().get(0).getSummary().getDepartureTime());
+                callback.onResult(new DepartureTime(routePlan.getRoutes().get(0)));
             }
 
             @Override
