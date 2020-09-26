@@ -11,6 +11,7 @@ import com.tomtom.online.sdk.routing.route.calculation.TrafficInformation;
 import com.tomtom.online.sdk.routing.route.description.AvoidType;
 import com.tomtom.online.sdk.routing.route.description.RouteType;
 import org.jetbrains.annotations.NotNull;
+import org.joda.time.DateTime;
 
 import java.util.Date;
 import java.util.List;
@@ -24,18 +25,16 @@ public class DepartureTimeFactory {
         api = OnlineRoutingApi.create(context, apiKey);
     }
 
-    public void request(LatLng origin, LatLng destination, com.tomtom.online.sdk.routing.route.description.TravelMode travelMode, Date arrivalDate, PendingResult.Callback<String> callback) {
+    public void request(LatLng origin, LatLng destination, com.tomtom.online.sdk.routing.route.description.TravelMode travelMode, DateTime arrivalDate, PendingResult.Callback<String> callback) {
         RouteDescriptor routeDescriptor = new RouteDescriptor.Builder()
                 .considerTraffic(true)
                 .travelMode(travelMode)
-                .routeType(RouteType.FASTEST)
                 .avoidType(avoidTypes)
                 .build();
 
         RouteCalculationDescriptor routeCalculationDescriptor = new RouteCalculationDescriptor.Builder()
                 .routeDescription(routeDescriptor)
-                .computeTravelForTraffic(TrafficInformation.ALL)
-                .arriveAt(arrivalDate)
+                .arriveAt(arrivalDate.toDate())
                 .build();
 
         RouteSpecification routeSpecification = new RouteSpecification.Builder(origin, destination)
