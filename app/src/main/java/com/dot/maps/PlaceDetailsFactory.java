@@ -38,7 +38,9 @@ public class PlaceDetailsFactory {
 
     private void requestSingleDetails(AutocompletePrediction prediction, PendingResult.Callback<PlaceDetails> callback) {
         PlacesApi.placeDetails(context, prediction.placeId, session)
-                .fields(PlaceDetailsRequest.FieldMask.ADDRESS_COMPONENT)
+                .fields(PlaceDetailsRequest.FieldMask.ADDRESS_COMPONENT,
+                        PlaceDetailsRequest.FieldMask.GEOMETRY_LOCATION_LAT,
+                        PlaceDetailsRequest.FieldMask.GEOMETRY_LOCATION_LNG)
                 .setCallback(callback);
     }
 
