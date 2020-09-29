@@ -2,7 +2,6 @@ package com.dot.maps;
 
 import android.content.Context;
 
-import com.google.maps.PendingResult;
 import com.tomtom.online.sdk.common.location.LatLng;
 import com.tomtom.online.sdk.routing.OnlineRoutingApi;
 import com.tomtom.online.sdk.routing.RoutingApi;
@@ -36,7 +35,7 @@ public class DepartureTimeFactory {
         api = OnlineRoutingApi.create(context, apiKey);
     }
 
-    public void request(LatLng origin, LatLng destination, TravelMode travelMode, DateTime arrivalDate, PendingResult.Callback<DateTime> callback) {
+    public void request(LatLng origin, LatLng destination, TravelMode travelMode, DateTime arrivalDate, Callback<DateTime> callback) {
         RouteDescriptor routeDescriptor = routeDescriptor(travelMode);
         RouteCalculationDescriptor routeCalculationDescriptor = routeCalculationDescriptor(routeDescriptor, arrivalDate);
         RouteSpecification routeSpecification = routeSpecification(origin, destination, routeCalculationDescriptor);
@@ -45,7 +44,7 @@ public class DepartureTimeFactory {
             @Override
             public void onSuccess(@NotNull RoutePlan routePlan) {
                 Summary summary = routePlan.getRoutes().get(0).getSummary();
-                callback.onResult(arrivalDate.plusSeconds(-summary.getNoTrafficTravelTimeInSeconds() - summary.getLiveTrafficIncidentsTravelTimeInSeconds()));
+                callback.onSuccess(arrivalDate.plusSeconds(-summary.getNoTrafficTravelTimeInSeconds() - summary.getLiveTrafficIncidentsTravelTimeInSeconds()));
             }
 
             @Override
