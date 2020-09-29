@@ -52,19 +52,9 @@ public class PlaceFactory implements Closeable {
             @Override
             public void onSuccess(@NotNull FuzzyOutcome fuzzyOutcome) {
                 List<Place> places = new ArrayList<>();
-                boolean shouldAdd;
 
-                for (FuzzySearchDetails details : fuzzyOutcome.getFuzzyDetailsList()) {
-                    shouldAdd = true;
-
-                    if(!isRedundant(details))
-                        for (Place place : places)
-                            if (place.getAddress().contains(new Place(details).getAddress()))
-                                shouldAdd = false;
-
-                    if(shouldAdd)
-                        places.add(new Place(details));
-                }
+                for (FuzzySearchDetails details : fuzzyOutcome.getFuzzyDetailsList())
+                    addNewPlace(places, details);
 
                 callback.onSuccess(places);
             }
@@ -79,6 +69,19 @@ public class PlaceFactory implements Closeable {
     @Override
     public void close() {
         searchApi.cancelSearchIfRunning();
+    }
+
+    private void addNewPlace(List<Place> places, FuzzySearchDetails newPlaceDetails) {
+        if(shouldAddPlace(places, newPlaceDetails))
+            places.add(new Place(newPlaceDetails));
+    }
+
+    private boolean shouldAddPlace(List<Place> places, FuzzySearchDetails newDetails) {
+        if(!isRedundant(newDetails))
+            for (Place place : places)
+                if (place.getAddress().contains(new Place(newDetails).getAddress()))
+                    return false;
+        return true;
     }
 
     private boolean isRedundant(FuzzySearchDetails details) {
