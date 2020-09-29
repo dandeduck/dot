@@ -1,14 +1,14 @@
 package com.dot.maps;
 
-import com.google.maps.model.PlaceDetails;
 import com.tomtom.online.sdk.common.location.LatLng;
+import com.tomtom.online.sdk.search.fuzzy.FuzzySearchDetails;
 
 public class Place {
     private final Address address;
     private final LatLng location;
 
-    public Place(PlaceDetails details) {
-        this(new Address(details), new LatLng(details.geometry.location.lat, details.geometry.location.lng));
+    public Place(FuzzySearchDetails details) {
+        this(new Address(details), details.getPosition());
     }
 
     public Place(Address address, LatLng location) {

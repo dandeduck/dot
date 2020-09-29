@@ -1,6 +1,7 @@
 package com.dot.maps;
 
 import android.content.Context;
+
 import com.google.maps.PendingResult;
 import com.tomtom.online.sdk.common.location.LatLng;
 import com.tomtom.online.sdk.routing.OnlineRoutingApi;

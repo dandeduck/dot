@@ -1,37 +1,65 @@
 package com.dot.maps;
 
-import com.google.maps.model.AddressComponent;
-import com.google.maps.model.PlaceDetails;
-
-import java.util.HashMap;
-import java.util.Map;
+import com.tomtom.online.sdk.search.fuzzy.FuzzySearchDetails;
 
 public class Address {
-    private final Map<String, String> shortNameMap;
+    private final String poiName;
+    private final String streetName;
+    private final String streetNumber;
+    private final String municipality;
 
-    public Address(PlaceDetails details) {
-        shortNameMap = new HashMap<>();
-        fillMap(details);
+    public Address(FuzzySearchDetails searchDetails) {
+        this(searchDetails.getPoi().getName(), searchDetails.getAddress().getStreetName(), searchDetails.getAddress().getStreetNumber(), searchDetails.getAddress().getMunicipalitySubdivision());
     }
 
-    private void fillMap(PlaceDetails details) {
-        for (AddressComponent component : details.addressComponents)
-            shortNameMap.put(component.types[0].name(), component.shortName);
+    public Address(String poiName, String streetName, String streetNumber, String municipality) {
+        this.poiName = poiName;
+        this.streetName = streetName;
+        this.streetNumber = streetNumber;
+        this.municipality = municipality;
     }
 
-    public String get(String type) {
-        return shortNameMap.get(type);
+    public String getPoiName() {
+        return poiName;
     }
 
-    public String shortStreetName() {
-        return get("route");
+    public String getStreetName() {
+        return streetName;
     }
 
-    public int streetNumber() {
-        return Integer.parseInt(get("street_number"));
+    public String getStreetNumber() {
+        return streetNumber;
     }
 
-    public String shortCityName() {
-        return get("locality");
+    public String getMunicipality() {
+        return municipality;
+    }
+
+    public boolean isRegularAddress() {
+        return poiName.isEmpty();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Address)) return false;
+        Address address = (Address) o;
+
+        return equals(address);
+    }
+
+    public boolean equals(Address other) {
+        return poiName.equals(other.poiName) &&
+                streetName.equals(other.streetName) &&
+                streetNumber.equals(other.streetNumber) &&
+                municipality.equals(other.municipality);
+    }
+
+    public boolean contains(Address other) {
+        return municipality.equals(other.municipality) &&
+                (poiName.contains(other.poiName) ||
+                other.poiName.contains(poiName) ||
+                streetName.contains(other.streetName) ||
+                other.streetName.contains(streetName));
     }
 }
