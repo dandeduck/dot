@@ -22,31 +22,18 @@ import java.util.List;
 
 public class PlaceFactory implements Closeable {
     private final SearchApi searchApi;
-    private final int maxResults;
+    private final FuzzySearchEngineDescriptor searchEngineDescriptor;
     private final double searchRadius;
 
     public PlaceFactory(Context context, String apiKey, int maxResults, double searchRadius) {
-        this.maxResults = maxResults;
         this.searchRadius = searchRadius;
+
         searchApi = OnlineSearchApi.create(context, apiKey);
+        searchEngineDescriptor = searchEngineDescriptor(maxResults);
     }
 
     public void request(LatLng searchLocation, String userInput, Callback<List<Place>> callback) {
-        userInput = userInput.replaceFirst(" ", "").toLowerCase();
-
-        FuzzySearchEngineDescriptor fuzzySearchEngineDescriptor = new FuzzySearchEngineDescriptor.Builder()
-                .minFuzzyLevel(1)
-                .limit(maxResults)
-                .maxFuzzyLevel(3)
-                .typeAhead(true)
-                .build();
-        FuzzyLocationDescriptor fuzzyLocationDescriptor = new FuzzyLocationDescriptor.Builder()
-                .positionBias(new LatLngBias(searchLocation, searchRadius))
-                .build();
-        FuzzySearchSpecification searchSpecification = new FuzzySearchSpecification.Builder(userInput)
-                .searchEngineDescriptor(fuzzySearchEngineDescriptor)
-                .locationDescriptor(fuzzyLocationDescriptor)
-                .build();
+        FuzzySearchSpecification searchSpecification = searchSpecification(formatInput(userInput), searchLocation);
 
         searchApi.search(searchSpecification, new FuzzyOutcomeCallback() {
             @Override
@@ -69,6 +56,32 @@ public class PlaceFactory implements Closeable {
     @Override
     public void close() {
         searchApi.cancelSearchIfRunning();
+    }
+
+    private FuzzySearchEngineDescriptor searchEngineDescriptor(int maxResults) {
+        return new FuzzySearchEngineDescriptor.Builder()
+                .minFuzzyLevel(1)
+                .limit(maxResults)
+                .maxFuzzyLevel(3)
+                .typeAhead(true)
+                .build();
+    }
+
+    private String formatInput(String userInput) {
+        return userInput.replaceFirst(" ", "").toLowerCase();
+    }
+
+    private FuzzySearchSpecification searchSpecification(String userInput, LatLng searchLocation) {
+        return new FuzzySearchSpecification.Builder(userInput)
+                .searchEngineDescriptor(searchEngineDescriptor)
+                .locationDescriptor(locationDescriptor(searchLocation))
+                .build();
+    }
+
+    private FuzzyLocationDescriptor locationDescriptor(LatLng searchLocation) {
+        return new FuzzyLocationDescriptor.Builder()
+                .positionBias(new LatLngBias(searchLocation, searchRadius))
+                .build();
     }
 
     private void addNewPlace(List<Place> places, FuzzySearchDetails newPlaceDetails) {
